@@ -40,7 +40,7 @@ library(extrafont)
 library(sp)
 library(RColorBrewer)
 
-setwd("D:/Data Analyst/R/India Election Analysis with R")
+setwd("C:\\Users\\mohdha\\Documents\\GitHub\\India-Election-Analysis-with-R")
 
 ```
 
@@ -338,23 +338,63 @@ This may reflect that cast dominance is incresed in India through out these year
 
 # Univariate Analysis
 
-> **Tip**: Now that you've completed your univariate explorations, it's time to
-reflect on and summarize what you've found. Use the questions below to help you
-gather your observations and add your own if you have other thoughts!
+### Structure
 
-### What is the structure of your dataset?
+The structure of National election data is simple. As seen at the start of the analysis.
+each row represents a candidate contested for a particular year.
+we have **11** columns:
 
-### What is/are the main feature(s) of interest in your dataset?
+* st_name (Name of state)
+* year (year of election)
+* pc_no (parliamentry constituency no)
+* pc_name (parliamentry constituency name)
+* pc_type (parliamentry constituency type)
+* cand_name (candidate name)
+* cand_sex (candidate sex)
+* partyname (political party name)
+* partyabbre (party's short form)
+* totvotpoll (total votes candidate get)
+* electors (total electors present in the constituency)
 
-### What other features in the dataset do you think will help support your \
-investigation into your feature(s) of interest?
+st_name, pc_name, pc_type, cand_name, cand_sex, partyname and partyabbre are of type **factor** and year, pc_no, totvotpoll and electors are of type **integer**.
+
+### Main feature(s) of interest
+
+party_name, st_name, year, cand_sex are essential feature of intrest which will allowed me to answes much fundamental questions like-
+
+* Which state has most electors?
+* Does women in India has the capacity to run for election?
+* Which year we see the most candidate run for election?
+
+and many more question.
+
+### Other features which will help support my investigation into my feature(s) of interest?
+
+totvotpoll, electors are the other two main feature which will help me explore few more relation ship like-
+
+* How vote share differs among gender?
+* How vote share differ based on electors?
+* Are independent candidates able to attract votes through out the years?
+* How states differ in vote shares?
 
 ### Did you create any new variables from existing variables in the dataset?
+I made three new variable -
 
-### Of the features you investigated, were there any unusual distributions? \
-Did you perform any operations on the data to tidy, adjust, or change the form \
-of the data? If so, why did you do this?
+* **proportion** - how much portion of the total electors a candidate get.
+* **win_vote** - The vote share of the winning cadidate for that constituency in that year.
+* **won** - represents a particular candidate won the election or not.
 
+### Unusual distributions and its remedy
+
+There are constituencies whose win_vote is 0. which cannot be true. The reason might be that election could be halted for that constituency by the court or election comminsion, which happened manier times in india. So I removed those entries as a outliar.
+
+### Observations
+
+* Among all the election 1996 is the year where maximum candidates contested the election.
+* Other gender and female candidates are way fewer than the male candidates.
+* Most of the candidates are from **Uttar Pradesh**(most populated state). But **west Bengal**(4th populated state) after having a huge population stands 7th in the no of candidate contested.
+* Most of Winning women candidate are from **Uttar Pradesh** followed by **west Bengal**.
+* Seats reserved for SC and ST has increased through out the years.
 
 # Bivariate Plots and analysis
 
