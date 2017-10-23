@@ -40,7 +40,7 @@ library(extrafont)
 library(sp)
 library(RColorBrewer)
 
-setwd("C:\\Users\\mohdha\\Documents\\GitHub\\India-Election-Analysis-with-R")
+setwd("D:/Data Analyst/R/India Election Analysis with R")
 
 ```
 
@@ -360,7 +360,7 @@ st_name, pc_name, pc_type, cand_name, cand_sex, partyname and partyabbre are of 
 
 ### Main feature(s) of interest
 
-party_name, st_name, year, cand_sex are essential feature of intrest which will allowed me to answes much fundamental questions like-
+party_name, st_name, year, cand_sex are essential feature of intrest which allowed me to answes much fundamental questions like-
 
 * Which state has most electors?
 * Does women in India has the capacity to run for election?
@@ -691,21 +691,32 @@ grid.arrange(P1,P2,ncol=2,top ="electors vs Vote share(%) winning candidates")
  There could be two reasons for this:
  
  **1.** Due to population growth.
+ 
  **2.** Due to a consistent use of politics of populism.
  
  We will investigate furthur on our second point.
 
-> **Tip**: As before, summarize what you found in your bivariate explorations
-here. Use the questions below to guide your discussion.
+# Bivariant Analysis
 
-### Talk about some of the relationships you observed in this part of the \
-investigation. How did the feature(s) of interest vary with other features in \
-the dataset?
+### Features relations observation and Surprices With that
 
-### Did you observe any interesting relationships between the other features \
-(not the main feature(s) of interest)?
+* Though the women's candidate are lower in numbers but womens secured a good meadia in proportion then men, more women (in %) get good proportion of vote then men.
 
-### What was the strongest relationship you found?
+* There is a slow increase in women winning candidate through out the year but surprizingly their vote share drops down in the later elections.
+
+* Independent candidates are may be the highest in contesting the elecctions but they are most likely ones to loose the election. On the other hand only few political parties gets the majority of seats. 
+
+* The top states which are concious of democracy are either union teritories or the states which are dealing with some kind of a militant insurgency in their state.  
+
+
+### Strongest Relationship
+
+The most strongest relation is between the electors and the vote percentage. Most of the winning candidate have the vote share between 20% to 40% but it is less likely to have a higher vote share when total electors are very high. 
+
+Also it is very less likely to have a vote share of more than 50% even for a small value of total electors.
+
+Another intresting point in the above relation is that as every next election the electors increses but the variance in the proportion gets slightly decreased. 
+
 
 
 # Multivariate Plots Section
