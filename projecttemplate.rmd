@@ -721,16 +721,94 @@ Another intresting point in the above relation is that as every next election th
 
 # Multivariate Plots Section
 
-> **Tip**: Now it's time to put everything together. Based on what you found in
-the bivariate plots section, create a few multivariate plots to investigate
-more complex interactions between variables. Make sure that the plots that you
-create here are justified by the plots you explored in the previous section. If
-you plan on creating any mathematical models, this is the section where you
-will do that.
+## 1. Electors vs proportion by year
 
 ```{r echo=FALSE, Multivariate_Plots}
 
+#plooting the chart between Electors and vote polled percentage
+ggplot(won_candidate_data, aes(x=proportion,y=electors,color=year))+ geom_jitter() + scale_color_brewer(type = 'div')+
+  scale_x_continuous(labels=percent,limits = c(0,0.8),breaks = seq(0,0.8,0.1)) +
+  scale_y_continuous(labels = comma) + xlab("votes percentage") + ylab("total electors") + ggtitle("electors vs Vote proportion of winning candidates")
+
 ```
+
+Here the cange is color as we go down to up in total electors represents the population growth through out the years, but also we are looking at a decrease in variance as we grow in poulation.
+
+## 2.Electors vs Vote share By Gender
+
+```{r echo=FALSE,message=FALSE, warning=FALSE, Multivariate_Plots_2}
+
+#filtering out the women who won the election
+women_won <- subset(won_candidate_data,cand_sex == 'F')
+
+#plooting the chart between Electors and vote polled percentage
+ggplot(won_candidate_data, aes(x=electors,y=proportion,color=cand_sex))+ geom_smooth(se=FALSE) +
+  scale_y_continuous(labels=percent,limits = c(0,0.8),breaks = seq(0,0.8,0.1)) +
+  scale_x_continuous(labels = comma,breaks = seq(0,4000000,500000)) + ylab("votes percentage") + xlab("total electors") + ggtitle("electors vs Vote proportion line chart based on gender")
+
+ggplot(won_candidate_data, aes(x=electors,y=proportion,color=year))+ geom_smooth(se=FALSE) +
+  scale_y_continuous(labels=percent,limits = c(0,0.8),breaks = seq(0,0.8,0.1)) +
+  scale_x_continuous(labels = comma) + xlab("votes percentage") + ylab("total electors") + ggtitle("electors vs Vote proportion line chart of women candidate based on years") 
+
+```
+
+In the first chart we can see that women did better in getting higher votes in constituencies with large electors then men.
+
+In the seconds graph we can see that 2014 has been one of the most successfull year for women candidates for larger constituencues in getting higher vote share.
+
+## 3.Top Political Parties
+
+Now we are going to see how the vote share varies in top political parties through out the year.
+```{r echo=FALSE,message=FALSE, warning=FALSE, Multivariate_Plots_3}
+
+#grouping the winning candidates by party
+Nat_election_party <- won_candidate_data %>%
+          group_by(partyabbre) %>%
+          summarise(cand_count = n())
+
+#soritng the party by candidates
+Nat_election_party <- Nat_election_party[order(-Nat_election_party$cand_count),]
+
+#extracting the top 5 party
+top_party_name <- head(Nat_election_party,5)
+
+#getting full top parties data
+top_parties <- subset(won_candidate_data,partyabbre %in%  top_party_name$partyabbre)
+top_parties$partyabbre <- factor(top_parties$partyabbre)
+
+#Plotting top parties vs no of candidates 
+ggplot(top_parties, aes(x=partyabbre)) + 
+  geom_histogram(stat = 'count',fill = '#C51162') +
+  geom_text(stat="count", color="white", vjust = 0.35, hjust=1.5, size=5, aes(y=..count.., label=..count..)) +
+  theme(axis.text.x=element_text(angle=90, size=9)) +
+  coord_flip() + theme_minimal() +
+  ggtitle("Top Parties Winning the elections") + 
+  xlab("Political Parties") + ylab("candidates count")
+
+
+```
+
+
+We can see that out of top five parties two parties have the largest share which are the **BJP** and **INC**.
+
+```{r echo=FALSE,message=FALSE, warning=FALSE, Multivariate_Plots_4}
+#getting summary of parties by years
+by(top_parties$partyabbre,top_parties$year,summary)
+
+#plooting stacked bar graph with top parties by year
+ggplot(data = top_parties, aes(x = year, fill = partyabbre)) + 
+    geom_bar(stat = 'count',color="black") + 
+  coord_flip() + xlab('Years') + ylab("Parliament seats won by political parties") + 
+  ggtitle('Rise and Fall of top parties')
+```
+
+From the above summary we can say that INC(Indian National congress) has been the most dominating party through out the years, But we see a fascinating shift in 2014 where INC went down to 44 seats from 206 seats in 2009. And BJP which starts from 2 seats in 1984 went up to 282 seats in 2014.
+
+Note: 
+
+* **BLD** is an outcome of a grand allaince(merger of many parties) to defeat **INC**. They won the election but the party as well their government didn't last. 
+
+* **INC(I)** was a new party but with the old politicians of **INC**. because the court banned **INC** to contest election, so they made a new party to contest the election.
 
 # Multivariate Analysis
 
