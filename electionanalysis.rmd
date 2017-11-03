@@ -68,11 +68,14 @@ national_election.winner_vote <- national_election %>%
 
 #making the left join to the orignal data
 Nat_election <- 
-  merge(national_election,national_election.winner_vote, by = c('st_name','year','pc_no'),x.all = TRUE )
+  merge(national_election,
+        national_election.winner_vote,
+        by = c('st_name','year','pc_no'),
+        x.all = TRUE )
 
 
 #making our won variable to reflect the winning status of the candidate
-Nat_election$won = ifelse(Nat_election$totvotpoll == Nat_election$win_vote,TRUE, FALSE)
+Nat_election$won = ifelse(Nat_election$totvotpoll == Nat_election$win_vote, TRUE, FALSE)
 
 summary(Nat_election)
 
@@ -110,7 +113,9 @@ Nat_election$year <- as.factor(Nat_election$year)
 ggplot(Nat_election, aes(x=year)) + 
   geom_histogram(stat = 'count',fill = '#C51162',color="black") +
   theme(axis.text.x=element_text(angle=90, size=9)) +
-  coord_flip() + theme_minimal() + scale_y_continuous(breaks=seq(0, 15000, 1000))+
+  coord_flip() + 
+  theme_minimal() + 
+  scale_y_continuous(breaks=seq(0, 15000, 1000))+
   ggtitle("No of Contestant each year (National)")
 
 
@@ -126,10 +131,14 @@ The increase in 1996 could be because so many independent cadidate contested as 
 
 
 #plotting the no of candidates contested by gender
-ggplot(subset(Nat_election,cand_sex != 'NULL'), aes(x=cand_sex)) + 
-  geom_bar(stat = 'count',fill = '#C51162',color="black") +
-  geom_text(stat="count", color="black", vjust = -0.1, size=3, aes(y=..count.., label=..count..)) + 
-  theme(axis.text.x=element_text(angle=90, size=9)) +
+ggplot(subset(Nat_election,cand_sex != 'NULL'), aes(x = cand_sex)) + 
+  geom_bar(stat = 'count',fill = '#C51162',color = "black") +
+  geom_text(stat = "count", 
+            color = "black", 
+            vjust = -0.1, 
+            size = 3, 
+            aes(y = ..count.., label = ..count..)) + 
+  theme(axis.text.x = element_text(angle = 90, size = 9)) +
    theme_minimal() +
   ggtitle("Contestant by Gender (National)")
 
@@ -144,11 +153,14 @@ It will be more intresting to investigate how many women out of the few who cont
 ```{r echo=FALSE,message=FALSE, warning=FALSE, Univariate_Plots_state}
 
 #plots the histogram to see the no of contestant from each state
-ggplot(Nat_election, aes(x=st_name)) + 
-  geom_histogram(stat = 'count',fill = '#C51162',color="black") +
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-  coord_flip() + theme_minimal() +
-  ggtitle("No of Contestant from each state (National)") + xlab("States") + ylab('candidates count')
+ggplot(Nat_election, aes(x = reorder(st_name, st_name, function(x) length(x)))) + 
+  geom_histogram(stat = 'count',fill = '#C51162',color = "black") +
+  theme(axis.text.x = element_text(angle = 90, size = 9)) +
+  coord_flip() + 
+  theme_minimal() +
+  xlab("States") + 
+  ylab('candidates count') +
+  ggtitle("No of Contestant from each state (National)")
 
 
 ```
@@ -188,9 +200,10 @@ In the totvopoll we can see that the median is very small which gives us a rough
 
 ```{r echo=FALSE,message=FALSE, warning=FALSE, Univariate_Plots_vote}
 # plot to see the distribution of votes polled
-ggplot(Nat_election, aes(x=totvotpoll)) + 
-     geom_bar(stat = 'count',fill = '#C51162',color="#C51162") +
-     theme(axis.text.x=element_text(angle=90, size=9)) + theme_minimal() + 
+ggplot(Nat_election, aes(x = totvotpoll)) + 
+     geom_bar(stat = 'count',fill = '#C51162',color = "#C51162") +
+     theme(axis.text.x = element_text(angle = 90, size = 9)) + 
+     theme_minimal() + 
      ggtitle("Distribution for votes polled (National)") + xlab("Votes polled")
 
 ```
@@ -201,9 +214,9 @@ It will be good to see the data in log10 transformation.
 ```{r echo=FALSE,message=FALSE, warning=FALSE, Univariate_Plots_vote_log}
 
 # plot to see the distribution of votes shared
-ggplot(Nat_election, aes(x=totvotpoll)) + 
-     geom_bar(stat = 'count',fill = '#C51162',color="#C51162") +
-     theme(axis.text.x=element_text(angle=90, size=9)) + scale_x_log10() + theme_minimal() + 
+ggplot(Nat_election, aes(x = totvotpoll)) + 
+     geom_bar(stat = 'count',fill = '#C51162',color = "#C51162") +
+     theme(axis.text.x = element_text(angle = 90, size = 9)) + scale_x_log10() + theme_minimal() + 
      ggtitle("Distribution for votes polled (National)") + xlab("Votes polled(log10)")
 
 ```
@@ -217,53 +230,24 @@ log10 transformation gives a better picture of data. We almost got a normal dist
 state_women_won = subset(Nat_election,won == TRUE & cand_sex == 'F') 
 
 #plotting winning candidates by states
-ggplot(state_women_won, aes(x=st_name)) + 
-  geom_bar(stat = 'count',fill = '#C51162',color="white") +
-  geom_text(stat="count", color="black", vjust = 0.4,hjust=-0.2, size=3, aes(y=..count.., label=..count..)) + coord_flip()+
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-   theme_minimal() +
-  ggtitle("Women Won From states") + ylab('contestant count')
+ggplot(state_women_won, 
+       aes(x = reorder(st_name, st_name, function(x) length(x)))) + 
+  geom_bar(stat = 'count',fill = '#C51162',color = "white") +
+  geom_text(stat = "count", 
+            color = "black", 
+            vjust = 0.4,
+            hjust = -0.2, 
+            size = 3,
+            aes(y = ..count.., label = ..count..)) + 
+  coord_flip()+
+  theme(axis.text.x = element_text(angle = 90, size = 9)) +
+  theme_minimal() +
+  ylab('contestant count') +
+  ggtitle("Women Won From states")
 
 ```
 
 **Uttar pradesh** is at the top where maximum womens have won in the election, followed by **westbengal** and **Bihar**. There are Many states in which women politicians rarely won like **tripur**, **sikkim**, **jharkhand** etc.
-
-## 6. Cast Divison In Parliament
-
-India is a cast Based society, It thousands of casts which play an important role in election, there are some reserved seats in the parliament on which candidates from a particular cast can contest. Lets see how many cast reserve seats have been in the parliament through out the years of election.
-
-There are two main cast who has reservation 
-
-**1)** Schedule cast(SC)
-**2)** Schedule cast(ST)
-
-Every body else contest in **genral** category.
-
-```{r echo=FALSE,warning=FALSE, univariate_Plots_6}
-
-#filtering out the winning candidates and excluding candidate with no cast type
-won_candidates = subset(Nat_election,won == TRUE & pc_type != '') 
-
-#little bit more cleaning
-won_candidates$pc_type[won_candidates$pc_type == 'SC '] <- 'SC'
-won_candidates$pc_type <- factor(won_candidates$pc_type) 
-
-#summary of the winning candidates by cast type
-summary(won_candidates$pc_type)
-
-#plotting cast vs count through out the yars
-ggplot(won_candidates, aes(x=pc_type)) + 
-  geom_bar(stat = 'count',fill = '#F44336',color="white") +
-  geom_text(stat="count", color="white", vjust = 0.4,hjust=1.1, size=3, aes(y=..count.., label=..count..)) + coord_flip()+
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-   theme_minimal() + facet_wrap(~year) +
-  ggtitle("Reserve Seats for different casts") + ylab('contestant count') +xlab("Casts")
-
-```
-
-We can see from above that the seats reserves for candidates from particular cast are barely increased. for **SC** it is from **78** in **1977** to **84** in **2014** and for **ST** it went from **38** in **1977** to **47** in **2014**.
-
-This may reflect that cast dominance is incresed in India through out these years.  
 
 # Univariate Analysis
 
@@ -323,7 +307,6 @@ There are constituencies whose win_vote is 0. which cannot be true. The reason m
 * Other gender and female candidates are way fewer than the male candidates.
 * Most of the candidates are from **Uttar Pradesh**(most populated state). But **west Bengal**(4th populated state) after having a huge population stands 7th in the no of candidate contested.
 * Most of Winning women candidate are from **Uttar Pradesh** followed by **west Bengal**.
-* Seats reserved for SC and ST has increased through out the years.
 
 # Bivariate Plots and analysis
 
@@ -341,8 +324,10 @@ Nat_election_gender$cand_sex <- factor(Nat_election_gender$cand_sex)
 by(Nat_election_gender$proportion, Nat_election_gender$cand_sex, summary)
 
 #plotting the proportion vs gender plot
-ggplot(Nat_election_gender, aes(x=cand_sex, y=proportion, fill = cand_sex)) + geom_boxplot() +
-  scale_y_continuous(limits = c(0,0.01),breaks=seq(0, 0.01, .002)) +
+ggplot(Nat_election_gender, 
+       aes(x = cand_sex, y = proportion, fill = cand_sex)) + 
+  geom_boxplot() +
+  scale_y_continuous(limits = c(0,0.01), breaks=seq(0, 0.01, .002)) +
   ggtitle('Proportion Boxplot By gender')
 
 
@@ -354,8 +339,11 @@ From the above Boxplot and summary we can say that most women in percentage has 
 ```{r echo=FALSE,warning=FALSE, Bivariate_Plots_1}
 
 #Density plot winning and loosing candidate based on gender
-ggplot(subset(Nat_election,cand_sex != 'O' & cand_sex != '' & cand_sex != 'NULL'), aes(x=proportion, fill=won)) +
-  geom_density(binwidth=10, alpha=0.5) + scale_y_continuous(limits = c(0,10)) + facet_wrap(~cand_sex) +
+ggplot(subset(Nat_election,cand_sex != 'O' & cand_sex != '' & cand_sex != 'NULL'),
+       aes(x = proportion, fill = won)) +
+  geom_density(binwidth = 10, alpha = 0.5) + 
+  scale_y_continuous(limits = c(0,10)) + 
+  facet_wrap(~cand_sex) +
   ggtitle('Win/loose vs vote proportion Density chart')
 
 
@@ -378,21 +366,38 @@ Nat_election_party_women <- Nat_election %>%
 Nat_election_party_women_sorted = Nat_election_party_women[order(-Nat_election_party_women$count_no),]
 
 #Plotting Female contestant vs Political Party
-P1 <- ggplot(head(subset(Nat_election_party_women_sorted,won == FALSE),10), aes(x=reorder(partyabbre,count_no),y=count_no)) + 
+P1 <- ggplot(head(subset(Nat_election_party_women_sorted,won == FALSE),10),
+             aes(x = reorder(partyabbre,count_no),y = count_no)) + 
   geom_histogram(stat = 'identity',fill = '#C51162') +
-  geom_text(stat="identity", color="white", vjust = 0.35, hjust=1, size=3, aes(y=count_no, label=count_no)) +
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-  coord_flip() + theme_minimal() +
-  ggtitle("No. of Female Cadidates by political parties who looses") + 
-  xlab("Political Parties") + ylab("Female candidates count")
+  geom_text(stat = "identity", 
+            color = "white", 
+            vjust = 0.35, 
+            hjust = 1, 
+            size = 3, 
+            aes(y = count_no, label = count_no)) +
+  theme(axis.text.x = element_text(angle = 90, size = 9)) +
+  coord_flip() + 
+  theme_minimal() +
+  xlab("Political Parties") + 
+  ylab("Female candidates count") +
+  ggtitle("No. of Female Cadidates by political parties who looses")
 
-P2 <- ggplot(head(subset(Nat_election_party_women_sorted,won == TRUE),10), aes(x=reorder(partyabbre,count_no),y=count_no)) + 
+P2 <- ggplot(head(subset(Nat_election_party_women_sorted,won == TRUE),10),
+             aes(x = reorder(partyabbre,count_no),y = count_no)) + 
   geom_histogram(stat = 'identity',fill = '#C51162') +
-  geom_text(stat="identity", color="white", vjust = 0.35, hjust=1.5, size=3, aes(y=count_no, label=count_no)) +
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-  coord_flip() + theme_minimal() + scale_y_continuous(limits = c(0,200))+
-  ggtitle("No. of Female Cadidates by political parties who Won") + 
-  xlab("Political Parties") + ylab("Female candidates count")
+  geom_text(stat = "identity",
+            color = "white",
+            vjust = 0.35,
+            hjust = 1.5,
+            size = 3,
+            aes(y = count_no, label = count_no)) +
+  theme(axis.text.x = element_text(angle = 90, size = 9)) +
+  coord_flip() + 
+  theme_minimal() +
+  scale_y_continuous(limits = c(0,200)) +
+  xlab("Political Parties") + 
+  ylab("Female candidates count") +
+  ggtitle("No. of Female Cadidates by political parties who Won")
 
 grid.arrange(P1, P2)
 
@@ -417,21 +422,38 @@ Nat_election_party_men <- Nat_election %>%
 Nat_election_party_men_sorted = Nat_election_party_men[order(-Nat_election_party_men$count_no),]
 
 #PLotting Male Contestant vs State
-P1 <- ggplot(head(subset(Nat_election_party_men_sorted,won == FALSE),10), aes(x=reorder(partyabbre,count_no),y=count_no)) + 
+P1 <- ggplot(head(subset(Nat_election_party_men_sorted,won == FALSE),10),
+             aes(x = reorder(partyabbre,count_no),y = count_no)) + 
   geom_histogram(stat = 'identity',fill = '#C51162') +
-  geom_text(stat="identity", color="black", vjust = 0.35, hjust=0, size=3, aes(y=count_no, label=count_no)) +
-  theme(axis.text.x=element_text(angle=90, size=9)) + scale_y_continuous(limits = c(0,43000)) +
+  geom_text(stat = "identity", 
+            color =  "black", 
+            vjust = 0.35, 
+            hjust = 0,
+            size = 3,
+            aes(y = count_no, label = count_no)) +
+  theme(axis.text.x = element_text(angle = 90, size = 9)) + 
+  scale_y_continuous(limits = c(0,43000)) +
   coord_flip() + theme_minimal() +
-  ggtitle("No. of Male Cadidates by political parties who looses") + 
-  xlab("Political Parties") + ylab("Male candidates count")
+  xlab("Political Parties") + 
+  ylab("Male candidates count") +
+  ggtitle("No. of Male Cadidates by political parties who looses")
 
-P2 <- ggplot(head(subset(Nat_election_party_men_sorted,won == TRUE),10), aes(x=reorder(partyabbre,count_no),y=count_no)) + 
+P2 <- ggplot(head(subset(Nat_election_party_men_sorted,won == TRUE),10),
+             aes(x = reorder(partyabbre,count_no), y = count_no)) + 
   geom_histogram(stat = 'identity',fill = '#C51162') + 
-  geom_text(stat="identity", color="black", vjust = 0.35, hjust=0, size=3, aes(y=count_no, label=count_no)) +
-  theme(axis.text.x=element_text(angle=90, size=9)) + scale_y_continuous(limits = c(0,1700)) +
+  geom_text(stat = "identity",
+            color = "black",
+            vjust = 0.35,
+            hjust = 0,
+            size = 3,
+            aes(y = count_no, label = count_no)) +
+  theme(axis.text.x = element_text(angle = 90, size = 9)) + 
+  scale_y_continuous(limits = c(0,1700)) +
   coord_flip() + theme_minimal() +
-  ggtitle("No. of Male Cadidates by political parties who Won") + 
-  xlab("Political Parties") + ylab("Male candidates count")
+  xlab("Political Parties") +
+  ylab("Male candidates count") +
+  ggtitle("No. of Male Cadidates by political parties who Won") 
+  
 
 grid.arrange(P1, P2)
 
@@ -449,12 +471,17 @@ Here we are going to see how many female cadidate make it to the parliament in t
 #filtering out the winning women candidates
 Women_won <- subset(Nat_election, cand_sex == 'F' & won == TRUE)
 
-ggplot(Women_won, aes(x=year)) + 
-  geom_bar(stat = 'count',fill = '#C51162',color="black") +
-  geom_text(stat="count", color="black", vjust = -0.1, size=3, aes(y=..count.., label=..count..)) + 
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-   theme_minimal() +
-  xlab('Election Years') + ylab('candidates count') +
+ggplot(Women_won, aes(x = year)) + 
+  geom_bar(stat = 'count',fill = '#C51162',color = "black") +
+  geom_text(stat = "count",
+            color = "black",
+            vjust = -0.1,
+            size = 3,
+            aes(y = ..count.., label = ..count..)) + 
+  theme(axis.text.x = element_text(angle = 90, size = 9)) +
+  theme_minimal() +
+  xlab('Election Years') + 
+  ylab('candidates count') +
   ggtitle("winning Women candidates by year")
 
 ```
@@ -468,7 +495,9 @@ Here we are going to see how women candiate's vote proportion varies through out
 ```{r echo=FALSE,warning=FALSE, Bivariate_Plots_5}
 
 #plotting the density line chart of women vote share though out the years
-ggplot(Women_won, aes(x=proportion,color=year)) + geom_density(position="dodge") + ggtitle('Vote proportion density chart for women candidates')
+ggplot(Women_won, aes(x = proportion,color = year)) + 
+  geom_density(position = "dodge") + 
+  ggtitle('Vote proportion density chart for women candidates')
 
 ```
 
@@ -483,12 +512,17 @@ Here we see the the performance of independent candidate through out years.
 #getting the independent candidates
 independent_cand <- subset(Nat_election,partyabbre == 'IND' & won == TRUE)
 
-ggplot(independent_cand, aes(x=year)) + 
-  geom_bar(stat = 'count',fill = '#C51162',color="black") +
-  geom_text(stat="count", color="black", vjust = -0.1, size=3, aes(y=..count.., label=..count..)) + 
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-   theme_minimal() +
-  xlab('Election Years') + ylab('candidates count') +
+ggplot(independent_cand, aes(x = year)) + 
+  geom_bar(stat = 'count',fill = '#C51162',color = "black") +
+  geom_text(stat = "count",
+            color = "black",
+            vjust = -0.1,
+            size = 3,
+            aes(y = ..count.., label = ..count..)) + 
+  theme(axis.text.x = element_text(angle = 90, size = 9)) +
+  theme_minimal() +
+  xlab('Election Years') + 
+  ylab('candidates count') +
   ggtitle("winning Independent candidates by year")
 
 ```
@@ -513,14 +547,23 @@ state_grouped <- Nat_election %>%
 state_grouped$proportion <- state_grouped$polled_vote/state_grouped$total_vote
 
 #plotting the voting percentage by states 
-ggplot(state_grouped, aes(x=reorder(st_name,proportion),y=proportion,width=0.8)) + 
-  geom_histogram(stat = 'identity',fill = '#C51162',color='black') + 
+ggplot(state_grouped, 
+       aes(x = reorder(st_name,proportion),y = proportion,width=0.8)) + 
+  geom_histogram(stat = 'identity',fill = '#C51162',color = 'black') + 
   scale_y_continuous(labels = percent, limits = c(0,1)) + 
-  geom_text(stat="identity", color="black", vjust = 0.35, hjust=-0.2, size=3,aes(y=proportion, label=paste(round(proportion, 3)*100, "%", sep=""))) + 
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-  coord_flip() + theme_minimal() +
-  ggtitle("People who voted in each state") + 
-  xlab("States") + ylab("Percentage count of polled votes")
+  geom_text(stat = "identity",
+            color = "black",
+            vjust = 0.35,
+            hjust = -0.2,
+            size = 3,
+            aes(y = proportion, 
+                label = paste(round(proportion, 3)*100, "%", sep = ""))) + 
+  theme(axis.text.x = element_text(angle = 90, size = 9)) +
+  coord_flip() + 
+  theme_minimal() +
+  xlab("States") + 
+  ylab("Percentage count of polled votes") +
+  ggtitle("People who voted in each state")
 
 ```
 
@@ -540,9 +583,13 @@ we are going how much a candidate gathere vote based on the electors size in his
 #Filtering out the winning candidates
 won_candidate_data <- subset(Nat_election,won == TRUE)
 
-ggplot(won_candidate_data, aes(x=proportion,y=electors)) + geom_jitter(alpha=1/10) +
-  scale_x_continuous(labels=percent,limits = c(0,0.8),breaks = seq(0,0.8,0.1)) +
-  scale_y_continuous(labels = comma) + xlab("votes percentage") + ylab("total electors") + ggtitle("electors vs Vote proportion of winning candidates")
+ggplot(won_candidate_data, 
+       aes(x = proportion,y = electors)) + geom_jitter(alpha = 1/10) +
+  scale_x_continuous(labels = percent,limits = c(0,0.8),breaks = seq(0,0.8,0.1)) +
+  scale_y_continuous(labels = comma) + 
+  xlab("votes percentage") + 
+  ylab("total electors") + 
+  ggtitle("electors vs Vote proportion of winning candidates")
 
 ```
 
@@ -555,21 +602,32 @@ Lets look it in different years.
 
 ```{r echo=FALSE,warning=FALSE, Bivariate_Plots_8}
 
-ggplot(won_candidate_data, aes(x=proportion,y=electors)) + geom_jitter(alpha=1/10) +
-  scale_x_continuous(labels=percent,limits = c(0,0.8),breaks = seq(0,0.8,0.2)) +
-  scale_y_continuous(labels = comma) + xlab("votes percentage") + ylab("total electors") + ggtitle("electors vs Vote proportion of winning candidates") + facet_wrap(~year)
+ggplot(won_candidate_data, aes(x = proportion,y = electors)) + 
+  geom_jitter(alpha = 1/10) +
+  scale_x_continuous(labels = percent,limits = c(0,0.8),breaks = seq(0,0.8,0.2)) +
+  scale_y_continuous(labels = comma) + 
+  xlab("votes percentage") + 
+  ylab("total electors") +
+  ggtitle("electors vs Vote proportion of winning candidates") +
+  facet_wrap(~year)
 
 ```
 
 ```{r echo=FALSE,warning=FALSE, Bivariate_Plots_9}
 
-P1 <- ggplot(subset(won_candidate_data,year == '1977'), aes(x=proportion,y=electors)) + geom_jitter(alpha=1/10) +
-  scale_x_continuous(labels=percent,limits = c(0,0.8),breaks = seq(0,0.8,0.2)) +
-  scale_y_continuous(labels = comma) + xlab("votes percentage") + ylab("total electors")
+P1 <- ggplot(subset(won_candidate_data,year == '1977'), 
+             aes(x = proportion,y = electors)) + 
+  geom_jitter(alpha = 1/10) +
+  scale_x_continuous(labels = percent,limits = c(0,0.8),breaks = seq(0,0.8,0.2)) +
+  scale_y_continuous(labels = comma) +
+  xlab("votes percentage") +
+  ylab("total electors")
 
-P2 <- ggplot(subset(won_candidate_data,year == '2014'), aes(x=proportion,y=electors)) + geom_jitter(alpha=1/10) +
-  scale_x_continuous(labels=percent,limits = c(0,0.8),breaks = seq(0,0.8,0.2)) +
-  scale_y_continuous(labels = comma) + xlab("votes percentage")
+P2 <- ggplot(subset(won_candidate_data,year == '2014'), aes(x = proportion,y = electors)) + 
+  geom_jitter(alpha = 1/10) +
+  scale_x_continuous(labels = percent,limits = c(0,0.8),breaks = seq(0,0.8,0.2)) +
+  scale_y_continuous(labels = comma) + 
+  xlab("votes percentage")
 
 grid.arrange(P1,P2,ncol=2,top ="electors vs Vote share(%) winning candidates")
 
@@ -586,6 +644,52 @@ grid.arrange(P1,P2,ncol=2,top ="electors vs Vote share(%) winning candidates")
  **2.** Due to a consistent use of politics of populism.
  
  We will investigate furthur on our second point.
+
+## 9. Cast Divison In Parliament
+
+India is a cast Based society, It thousands of casts which play an important role in election, there are some reserved seats in the parliament on which candidates from a particular cast can contest. Lets see how many cast reserve seats have been in the parliament through out the years of election.
+
+There are two main cast who has reservation 
+
+**1)** Schedule cast(SC)
+**2)** Schedule cast(ST)
+
+Every body else contest in **genral** category.
+
+```{r echo=FALSE,warning=FALSE, univariate_Plots_6}
+
+#filtering out the winning candidates and excluding candidate with no cast type
+won_candidates = subset(Nat_election,won == TRUE & pc_type != '') 
+
+#little bit more cleaning
+won_candidates$pc_type[won_candidates$pc_type == 'SC '] <- 'SC'
+won_candidates$pc_type <- factor(won_candidates$pc_type) 
+
+#summary of the winning candidates by cast type
+summary(won_candidates$pc_type)
+
+#plotting cast vs count through out the yars
+ggplot(won_candidates, aes(x = pc_type)) + 
+  geom_bar(stat = 'count',fill = '#F44336',color = "white") +
+  geom_text(stat = "count", 
+            color = "white",
+            vjust = 0.4,
+            hjust = 1.1, 
+            size = 3,
+            aes(y = ..count.., label = ..count..)) +
+  coord_flip()+
+  theme(axis.text.x=element_text(angle = 90, size = 9)) +
+  theme_minimal() + 
+  ylab('contestant count') +
+  xlab("Casts") +
+  facet_wrap(~year) +
+  ggtitle("Reserve Seats for different casts")
+
+```
+
+We can see from above that the seats reserves for candidates from particular cast are barely increased. for **SC** it is from **78** in **1977** to **84** in **2014** and for **ST** it went from **38** in **1977** to **47** in **2014**.
+
+This may reflect that cast dominance is incresed in India through out these years.  
 
 # Bivariant Analysis
 
@@ -617,9 +721,15 @@ Another intresting point in the above relation is that as every next election th
 ```{r echo=FALSE,warning=FALSE, Multivariate_Plots}
 
 #plooting the chart between Electors and vote polled percentage
-ggplot(won_candidate_data, aes(x=proportion,y=electors,color=year))+ geom_jitter() + scale_color_brewer(type = 'div')+
-  scale_x_continuous(labels=percent,limits = c(0,0.8),breaks = seq(0,0.8,0.1)) +
-  scale_y_continuous(labels = comma,limits = c(0,3000000),breaks = seq(0,3000000,500000)) + xlab("votes percentage") + ylab("total electors") + ggtitle("electors vs Vote proportion of winning candidates in years")
+ggplot(won_candidate_data, 
+       aes(x = proportion,y = electors,color = year))+ 
+  geom_jitter() + 
+  scale_color_brewer(type = 'div')+
+  scale_x_continuous(labels = percent,limits = c(0,0.8),breaks = seq(0,0.8,0.1)) +
+  scale_y_continuous(labels = comma,limits = c(0,3000000),breaks = seq(0,3000000,500000)) +
+  xlab("votes percentage") + 
+  ylab("total electors") + 
+  ggtitle("electors vs Vote proportion of winning candidates in years")
 
 ```
 
@@ -633,13 +743,21 @@ Here the change in color as we go down to up in total electors represents the po
 women_won <- subset(won_candidate_data,cand_sex == 'F')
 
 #plooting the chart between Electors and vote polled percentage
-ggplot(won_candidate_data, aes(x=electors,y=proportion,color=cand_sex))+ geom_smooth(se=FALSE) +
-  scale_y_continuous(labels=percent,limits = c(0,0.8),breaks = seq(0,0.8,0.1)) +
-  scale_x_continuous(labels = comma,breaks = seq(0,4000000,500000)) + ylab("votes percentage") + xlab("total electors") + ggtitle("electors vs Vote proportion line chart based on gender")
+ggplot(won_candidate_data, aes(x = electors,y = proportion,color = cand_sex))+ 
+  geom_smooth(se = FALSE) +
+  scale_y_continuous(labels = percent,limits = c(0,0.8),breaks = seq(0,0.8,0.1)) +
+  scale_x_continuous(labels = comma,breaks = seq(0,4000000,500000)) + 
+  ylab("votes percentage") +
+  xlab("total electors") + 
+  ggtitle("electors vs Vote proportion line chart based on gender")
 
-ggplot(won_candidate_data, aes(x=electors,y=proportion,color=year))+ geom_smooth(se=FALSE) +
-  scale_y_continuous(labels=percent,limits = c(0,0.8),breaks = seq(0,0.8,0.1)) +
-  scale_x_continuous(labels = comma) + xlab("votes percentage") + ylab("total electors") + ggtitle("electors vs Vote proportion line chart of women candidate based on years") 
+ggplot(won_candidate_data, aes(x = electors,y = proportion,color = year))+ 
+  geom_smooth(se = FALSE) +
+  scale_y_continuous(labels = percent,limits = c(0,0.8),breaks = seq(0,0.8,0.1)) +
+  scale_x_continuous(labels = comma) +
+  xlab("votes percentage") + 
+  ylab("total electors") +
+  ggtitle("electors vs Vote proportion line chart of women candidate based on years") 
 
 ```
 
@@ -668,13 +786,20 @@ top_parties <- subset(won_candidate_data,partyabbre %in%  top_party_name$partyab
 top_parties$partyabbre <- factor(top_parties$partyabbre)
 
 #Plotting top parties vs no of candidates 
-ggplot(top_parties, aes(x=partyabbre)) + 
+ggplot(top_parties, aes(x = reorder(partyabbre, partyabbre, function(x) length(x)))) + 
   geom_histogram(stat = 'count',fill = '#C51162') +
-  geom_text(stat="count", color="white", vjust = 0.35, hjust=1.2, size=5, aes(y=..count.., label=..count..)) +
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-  coord_flip() + theme_minimal() +
-  ggtitle("Top Parties Winning the elections") + 
-  xlab("Political Parties") + ylab("candidates count")
+  geom_text(stat = "count",
+            color = "white",
+            vjust = 0.35, 
+            hjust = 1.2, 
+            size = 5,
+            aes(y = ..count.., label = ..count..)) +
+  theme(axis.text.x = element_text(angle = 90, size = 9)) +
+  coord_flip() + 
+  theme_minimal() +
+  xlab("Political Parties") + 
+  ylab("candidates count") +
+  ggtitle("Top Parties Winning the elections")
 
 
 ```
@@ -687,9 +812,11 @@ We can see that out of top ten parties two parties have the largest share which 
 by(top_parties$partyabbre,top_parties$year,summary)
 
 #plooting stacked bar graph with top parties by year
-ggplot(data = top_parties, aes(x = year, fill = partyabbre)) + 
-    geom_bar(stat = 'count',color="black") + 
-  coord_flip() + xlab('Years') + ylab("Parliament seats won by political parties") + 
+ggplot(data = top_parties, aes(x = year, fill = partyabbre)) +
+  geom_bar(stat = 'count',color = "black") + 
+  coord_flip() + 
+  xlab('Years') + 
+  ylab("Parliament seats won by political parties") + 
   ggtitle('Rise and Fall of top parties')
 ```
 
@@ -710,10 +837,14 @@ Note:
 independent_won <- subset(won_candidate_data, partyabbre == 'IND')
 
 #womens growth through out election years
-ggplot(data = independent_won, aes(x=proportion, y=electors,color=cand_sex)) + geom_jitter() +  scale_x_continuous(labels=percent,limits = c(0,0.8),breaks = seq(0,0.8,0.2)) +
+ggplot(data = independent_won, aes(x = proportion, y = electors,color = cand_sex)) + 
+  geom_jitter() +
+  scale_x_continuous(labels = percent,limits = c(0,0.8),breaks = seq(0,0.8,0.2)) +
   scale_y_continuous(labels = comma,limits = c(0,2000000),breaks = seq(0,2000000,500000)) +
- xlab('vote share (%)') + ylab("Electors") + 
-  ggtitle('Independent candidate vote share vs total electors') + facet_wrap(~year)
+  xlab('vote share (%)') + 
+  ylab("Electors") + 
+  ggtitle('Independent candidate vote share vs total electors') +
+  facet_wrap(~year)
 ```
 
 Independent candidates had experienced a lot of ups and downs through out the years. For women it looks a lost battle. And even for men it's not so good.  
@@ -731,11 +862,15 @@ In this we are going to look at the performance of top three parties which we fo
 ```{r echo=FALSE,message=FALSE, warning=FALSE, Multivariate_Plots_6}
 
 #filtering the top parties
-Top_Parties <- subset(won_candidate_data, partyabbre == 'INC' | partyabbre == 'BJP' | partyabbre == 'CPM')
+Top_Parties <- subset(won_candidate_data, 
+                      partyabbre == 'INC' |   partyabbre == 'BJP' | partyabbre == 'CPM')
 
 #plotting scatter plot
-ggplot(data = Top_Parties, aes(x=proportion, y=electors,color=partyabbre)) + geom_jitter(alpha = 1/2) + 
- xlab('vote share (%)') + ylab("Electors") + scale_x_continuous(labels = percent,breaks = seq(0,1,0.1)) +
+ggplot(data = Top_Parties, aes(x = proportion, y = electors,color = partyabbre)) + 
+  geom_jitter(alpha = 1/2) + 
+  xlab('vote share (%)') +
+  ylab("Electors") +
+  scale_x_continuous(labels = percent,breaks = seq(0,1,0.1)) +
   scale_y_continuous(labels = comma,breaks = seq(0,3000000,500000)) +
   ggtitle('Proformance of top political parties')
 
@@ -749,16 +884,24 @@ INC <- subset(won_candidate_data, partyabbre == 'INC')
 BJP <- subset(won_candidate_data, partyabbre == 'BJP')
 
 #plotting performance of INC
-ggplot(data = INC, aes(x=proportion, y=electors)) + geom_jitter(alpha = 1/2) + 
- xlab('vote share (%)') + ylab("Electors") + scale_x_continuous(labels = percent,breaks = seq(0,1,0.1)) +
+ggplot(data = INC, aes(x = proportion, y = electors)) + 
+  geom_jitter(alpha = 1/2) +
+  xlab('vote share (%)') + 
+  ylab("Electors") + 
+  scale_x_continuous(labels = percent,breaks = seq(0,1,0.1)) +
   scale_y_continuous(labels = comma,breaks = seq(0,3000000,500000)) +
-  ggtitle('Proformance of INC') + facet_wrap(~year)
+  ggtitle('Proformance of INC') + 
+  facet_wrap(~year)
 
 #plotting performance of BJP
-ggplot(data = BJP, aes(x=proportion, y=electors)) + geom_jitter(alpha = 1/2) + 
- xlab('vote share (%)') + ylab("Electors") + scale_x_continuous(labels = percent,breaks = seq(0,1,0.1)) +
+ggplot(data = BJP, aes(x = proportion, y = electors)) +
+  geom_jitter(alpha = 1/2) + 
+  xlab('vote share (%)') +
+  ylab("Electors") +
+  scale_x_continuous(labels = percent,breaks = seq(0,1,0.1)) +
   scale_y_continuous(labels = comma,breaks = seq(0,3000000,500000)) +
-  ggtitle('Proformance of BJP') + facet_wrap(~year)
+  ggtitle('Proformance of BJP') + 
+  facet_wrap(~year)
 
 ```
 
@@ -769,32 +912,52 @@ Here we are looking at the performance of top two political parties having a ver
 ```{r echo=FALSE,message=FALSE, warning=FALSE, Multivariate_Plots_8}
 
 #plotting the bar garph of INC by gender
-ggplot(INC, aes(x= year, fill=cand_sex) ) +
-  geom_histogram(stat="count", position="dodge", color="black") +
-  geom_text(stat='count',data=subset(INC, cand_sex =="M"), color="white",
-            aes(y=..count.., label=..count..), 
-             size=3, vjust = -0.5, hjust=1.3) +
-  geom_text(stat='count',data=subset(INC, cand_sex =="F"),color="black",
-            aes(y=..count.., label=..count..), 
-             size=3, vjust = 1.5, hjust=-0.3) +
+ggplot(INC, aes(x = year, fill = cand_sex) ) +
+  geom_histogram(stat = "count", position = "dodge", color = "black") +
+  geom_text(stat = 'count',
+            data = subset(INC, cand_sex == "M"), 
+            color = "white",
+            aes(y = ..count.., label = ..count..), 
+             size = 3, 
+            vjust = -0.5, 
+            hjust = 1.3) +
+  geom_text(stat = 'count',
+            data = subset(INC,cand_sex == "F"),
+            color = "black",
+            aes(y = ..count.., label = ..count..), 
+            size = 3,
+            vjust = 1.5, 
+            hjust = -0.3) +
   theme_minimal() +
   coord_flip() + 
-  scale_fill_manual(values=c("goldenrod1","dodgerblue4" ), name="candidate Sex") + 
-  ggtitle("Candidates by gender in INC") + xlab("Years") + ylab("Candidates")
+  scale_fill_manual(values=c("goldenrod1","dodgerblue4" ), name="candidate Sex") +
+    xlab("Years") + 
+  ylab("Candidates") +
+  ggtitle("Candidates by gender in INC")
 
 #plotting the bar garph of INC by gender
-ggplot(BJP, aes(x= year, fill=cand_sex) ) +
-  geom_histogram(stat="count", position="dodge", color="black") +
-  geom_text(stat='count',data=subset(BJP, cand_sex =="M"), color="white",
-            aes(y=..count.., label=..count..), 
-             size=3, vjust = -0.5, hjust=1.3) +
-  geom_text(stat='count',data=subset(BJP, cand_sex =="F"),color="black",
-            aes(y=..count.., label=..count..), 
-             size=3, vjust = 1.5, hjust=-0.3) +
+ggplot(BJP, aes(x = year, fill = cand_sex) ) +
+  geom_histogram(stat = "count", position = "dodge", color = "black") +
+  geom_text(stat = 'count',
+            data = subset(BJP, cand_sex == "M"), 
+            color = "white",
+            aes(y = ..count.., label = ..count..), 
+             size = 3,
+            vjust = -0.5, 
+            hjust = 1.3) +
+  geom_text(stat = 'count',
+            data = subset(BJP, cand_sex == "F"),
+            color = "black",
+            aes(y = ..count.., label = ..count..), 
+            size=3,
+            vjust = 1.5, 
+            hjust=-0.3) +
   theme_minimal() +
   coord_flip() + 
-  scale_fill_manual(values=c("goldenrod1","dodgerblue4" ), name="candidate Sex") + 
-  ggtitle("Candidates by gender in BJP") + xlab("Years") + ylab("Candidates")
+  scale_fill_manual(values = c("goldenrod1","dodgerblue4" ), name="candidate Sex") +
+  xlab("Years") + 
+  ylab("Candidates") +
+  ggtitle("Candidates by gender in BJP")
 
 ```
 
@@ -818,102 +981,51 @@ Every body else contest in **genral** category.
 ```{r echo=FALSE,warning=FALSE, final_pot_1}
 
 #plotting cast vs count through out the yars
-ggplot(won_candidates, aes(x=pc_type)) + 
-  geom_bar(stat = 'count',fill = '#F44336',color="white") +
-  geom_text(stat="count", color="white", vjust = 0.4,hjust=1.1, size=3, aes(y=..count.., label=..count..)) + coord_flip()+
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-   theme_minimal() + facet_wrap(~year) +
-  ggtitle("Reserve Seats for different casts") + ylab('contestant count') +xlab("Casts")
-
+ggplot(won_candidates, aes(x = pc_type)) + 
+  geom_bar(stat = 'count',fill = '#F44336',color = "white") +
+  geom_text(stat = "count", 
+            color = "white",
+            vjust = 0.4,
+            hjust = 1.1, 
+            size = 3,
+            aes(y = ..count.., label = ..count..)) +
+  coord_flip()+
+  theme(axis.text.x=element_text(angle = 90, size = 9)) +
+  theme_minimal() + 
+  ylab('contestant count') +
+  xlab("Casts") +
+  facet_wrap(~year) +
+  ggtitle("Reserve Seats for different casts")
 ```
 
 We can see from above that the seats reserves for candidates from particular cast were increased. for **SC** it is from **78** in **1977** to **84** in **2014** and for **ST** it went from **38** in **1977** to **47** in **2014**. As a result of that seats comes under general category gets decreased.
 
 This reflect how cast dominance is incresed in India through out these years.
 
-### 2. Women/Men candidate By party/Independent
-
-```{r echo=FALSE,warning=FALSE, final_plot_2}
-
-#Plotting Female contestant vs Political Party
-P1 <- ggplot(head(subset(Nat_election_party_women_sorted,won == FALSE),10), aes(x=reorder(partyabbre,count_no),y=count_no)) + 
-  geom_histogram(stat = 'identity',fill = '#C51162') +
-  geom_text(stat="identity", color="white", vjust = 0.35, hjust=1, size=3, aes(y=count_no, label=count_no)) +
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-  coord_flip() + theme_minimal() +
-  ggtitle("No. of Female Cadidates by political parties who looses") + 
-  xlab("Political Parties") + ylab("Female candidates count")
-
-P2 <- ggplot(head(subset(Nat_election_party_women_sorted,won == TRUE),10), aes(x=reorder(partyabbre,count_no),y=count_no)) + 
-  geom_histogram(stat = 'identity',fill = '#C51162') +
-  geom_text(stat="identity", color="white", vjust = 0.35, hjust=1.5, size=3, aes(y=count_no, label=count_no)) +
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-  coord_flip() + theme_minimal() + scale_y_continuous(limits = c(0,200))+
-  ggtitle("No. of Female Cadidates by political parties who Won") + 
-  xlab("Political Parties") + ylab("Female candidates count")
-
-grid.arrange(P1, P2)
-
-P3 <- ggplot(head(subset(Nat_election_party_men_sorted,won == FALSE),10), aes(x=reorder(partyabbre,count_no),y=count_no)) + 
-  geom_histogram(stat = 'identity',fill = '#C51162') +
-  geom_text(stat="identity", color="black", vjust = 0.35, hjust=0, size=3, aes(y=count_no, label=count_no)) +
-  theme(axis.text.x=element_text(angle=90, size=9)) + scale_y_continuous(limits = c(0,43000)) +
-  coord_flip() + theme_minimal() +
-  ggtitle("No. of Male Cadidates by political parties who looses") + 
-  xlab("Political Parties") + ylab("Male candidates count")
-
-P4 <- ggplot(head(subset(Nat_election_party_men_sorted,won == TRUE),10), aes(x=reorder(partyabbre,count_no),y=count_no)) + 
-  geom_histogram(stat = 'identity',fill = '#C51162') + 
-  geom_text(stat="identity", color="black", vjust = 0.35, hjust=0, size=3, aes(y=count_no, label=count_no)) +
-  theme(axis.text.x=element_text(angle=90, size=9)) + scale_y_continuous(limits = c(0,1700)) +
-  coord_flip() + theme_minimal() +
-  ggtitle("No. of Male Cadidates by political parties who Won") + 
-  xlab("Political Parties") + ylab("Male candidates count")
-
-grid.arrange(P3, P4)
-
-```
-
-Here we can see that among top 10, the most of the women/men contested as **Independent**(IND) and lost, It is very Hard for any candidate to contest and win an election as independent. But on the other hand if contesting women/men is in a political party, his/her chances to win is better.
-
-One Big fact which is revealed by the above chart is how much less women were fielded in the election as compared to men. This shows a gender bias in among all the political parities. 
-
-**Indian National Congress**(INC) is at the top most political party whoose winning women candiate is higher than any other party followed by **Bhartiya Janta Party**(BJP).
-
-
-### 3.Rise And Fall Of Women.
-
-Here we are going to see how many female cadidate make it to the parliament in the election.
-
-```{r echo=FALSE,warning=FALSE, final_plot_3}
-
-ggplot(Women_won, aes(x=year)) + 
-  geom_bar(stat = 'count',fill = '#C51162',color="black") +
-  geom_text(stat="count", color="black", vjust = -0.1, size=3, aes(y=..count.., label=..count..)) + 
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-   theme_minimal() +
-  xlab('Election Years') + ylab('candidates count') +
-  ggtitle("winning Women candidates by year")
-
-```
-
-After having a huge gender bias among political parties, **Women didn't gave up**, this showed by above chart, which shows a slow but a hopefull increase in women in the parliament thorugh out these years. 
-
-### 4. States concious of democracy
+### 2. States concious of democracy
 
 We will see in this graph how much citizen of each state take election seriously or went to poll their votes.
 
 ```{r echo=FALSE,warning=FALSE, final_plot_4}
 
 #plotting the voting percentage by states 
-ggplot(state_grouped, aes(x=reorder(st_name,proportion),y=proportion,width=0.8)) + 
-  geom_histogram(stat = 'identity',fill = '#C51162',color='black') + 
+ggplot(state_grouped, 
+       aes(x = reorder(st_name,proportion),y = proportion,width=0.8)) + 
+  geom_histogram(stat = 'identity',fill = '#C51162',color = 'black') + 
   scale_y_continuous(labels = percent, limits = c(0,1)) + 
-  geom_text(stat="identity", color="black", vjust = 0.35, hjust=-0.2, size=3,aes(y=proportion, label=paste(round(proportion, 3)*100, "%", sep=""))) + 
-  theme(axis.text.x=element_text(angle=90, size=9)) +
-  coord_flip() + theme_minimal() +
-  ggtitle("People who voted in each state") + 
-  xlab("States") + ylab("Percentage count of polled votes")
+  geom_text(stat = "identity",
+            color = "black",
+            vjust = 0.35,
+            hjust = -0.2,
+            size = 3,
+            aes(y = proportion, 
+                label = paste(round(proportion, 3)*100, "%", sep = ""))) + 
+  theme(axis.text.x = element_text(angle = 90, size = 9)) +
+  coord_flip() + 
+  theme_minimal() +
+  xlab("States") + 
+  ylab("Percentage count of polled votes") +
+  ggtitle("People who voted in each state")
 
 ```
 
@@ -924,32 +1036,16 @@ One intresting things in the above chart is that states like **West bengal**, **
 
 **Kerela** which is the most literate state in the country is also in the top 10.
 
-### 5. Electors vs proportion by year
-
-```{r echo=FALSE,warning=FALSE, final_plot_5}
-
-#plooting the chart between Electors and vote polled percentage
-ggplot(won_candidate_data, aes(x=proportion,y=electors,color=year))+ geom_jitter() + 
-  scale_color_brewer(type = 'div') +
-  scale_x_continuous(labels=percent,limits = c(0,0.8),breaks = seq(0,0.8,0.1)) +
-  scale_y_continuous(labels = comma,limits = c(0,3000000),breaks = seq(0,3000000,500000)) + 
-  xlab("votes percentage") + ylab("total electors") + 
-  ggtitle("electors vs Vote proportion of winning candidates in years")
-
-```
-
-The above chart represents how rapidly the constituencies population had increased through out the years. Also how the proportion of vote remain almost same for the winning candidates. Most of the winning candidate get the vote share between 10% and 50%.
-
-But as we go up we see a decrease in the variance of voteshare, like in 2014, the variance in the vote share decreased, most of the candidates seems to get vote share between 15% to 45%.
-
-### 6. Political Shift in Parliament
+### 3. Political Shift in Parliament
 
 ```{r echo=FALSE,message=FALSE, warning=FALSE, final_plot_6}
 
 #plooting stacked bar graph with top parties by year
-ggplot(data = top_parties, aes(x = year, fill = partyabbre)) + 
-    geom_bar(stat = 'count',color="black") + 
-  coord_flip() + xlab('Years') + ylab("Parliament seats won by political parties") + 
+ggplot(data = top_parties, aes(x = year, fill = partyabbre)) +
+  geom_bar(stat = 'count',color = "black") + 
+  coord_flip() + 
+  xlab('Years') + 
+  ylab("Parliament seats won by political parties") + 
   ggtitle('Rise and Fall of top parties')
 
 ```
